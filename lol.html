@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>¿propuesta de pololeo? 💞</title>
+  <meta name="theme-color" content="#ff7fb0" />
+  <style>
+    :root{
+      --bg1:#fff0f6;
+      --bg2:#ffe3ee;
+      --primary:#ff4d8d;
+      --primary-2:#ff87b9;
+      --text:#2b2b2b;
+      --ok:#22c55e;
+    }
+    #celebrate {
+      transition: opacity 0.5s ease;
+    }
+   body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  font-family: ui-rounded, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color: var(--text);
+
+  background:
+    linear-gradient(
+      rgba(0,0,0,0.45),
+      rgba(0,0,0,0.45)
+    ),
+    url("flor-infierno.jpg") center/cover no-repeat;
+}
+
+    .card{
+      width:min(680px, 92vw);
+      background:#fff;
+      
+      border-radius:28px;
+      padding:28px 24px;
+      box-shadow: 0 20px 50px rgba(255,77,141,.25);
+      text-align:center;
+      position:relative;
+    }
+    h1{ margin:16px 0 10px; }
+    .btns{ display:flex; justify-content:center; gap:14px; margin-top:16px; flex-wrap:wrap; }
+    .btn{
+      border:none; cursor:pointer; font-weight:700;
+      padding:14px 20px; border-radius:999px;
+      box-shadow: 0 8px 20px rgba(0,0,0,.08);
+      font-size:1rem;
+    }
+    .btn-yes{ background: linear-gradient(135deg, var(--primary), var(--primary-2)); color:#fff; }
+    .btn-no{ background:#fff; color:#ff2b6e; border:2px dashed #ffc1d8; }
+    .overlay{ position:fixed; inset:0; display:none; place-items:center;
+      background:rgba(255, 237, 245, .75); backdrop-filter: blur(6px);
+    }
+    .overlay.show{ display:grid; }
+    .dialog{ background:#fff; border-radius:28px; padding:28px; max-width:600px; text-align:center; }
+    .big{ font-size:2rem; margin-bottom:10px; }
+    .ok{ color:var(--ok); font-weight:bold; }
+    .confetti {
+  position: fixed;
+  top: -10px;
+  opacity: 0.9;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+/* Estilos SOLO para el corazón */
+.heart {
+  width: 100px;
+  height: 90px;
+  position: relative;
+  margin: 50px auto;
+  transform: rotate(-45deg);
+  animation: heartbeat 1s infinite;
+}
+
+.heart::before,
+.heart::after {
+  content: "";
+  width: 100px;
+  height: 90px;
+  border-radius: 50%;
+  position: absolute;
+  background: red;
+}
+
+.heart::before {
+  top: -50px;
+  left: 0;
+}
+
+.heart::after {
+  left: 50px;
+  top: 0;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1) rotate(-45deg); }
+  25% { transform: scale(1.2) rotate(-45deg); }
+  50% { transform: scale(1.1) rotate(-45deg); }
+  75% { transform: scale(1.2) rotate(-45deg); }
+}
+
+  </style>
+<!-- Corazón que aparecerá al final -->
+<div id="heart-container" style="display:none;">
+  <div class="heart"></div>
+</div>
+
+</div>
+
+</head>
+<body>
+  
+  <main class="card">
+    <h1>voy a ser un poco egoista pero me dejarias<br/>ser tu ultimo amor,quieres pololear with me?💕 </h1>
+    <p>Prometo darte todo mi amor y cuidarte mejor que nunca. ✨</p>
+    <div class="btns">
+      <button id="yes" class="btn btn-yes">Sí, quiero 💘</button>
+      <button id="no"  class="btn btn-no">No… (¿segura?) 😳</button>
+    </div>
+    <div class="tiny">Pista: el botón <strong>Sí</strong> es el correcto my tani 😉</div>
+  </main>
+<div class="overlay">
+  <h1>¿Querés ser mi novia?</h1>
+  <div class="buttons">
+    <button id="yes">Sí</button>
+    <button id="no">No</button>
+  </div>
+</div>
+
+  <!-- Overlay cuando dice SÍ -->
+  <div class="overlay" id="overlay">
+    <div class="dialog">
+      <div class="big">¡Sabía que ibas a decir <span class="ok">SÍ</span>! 🥹💚</div>
+      <p>quien diria q la tumba encajaria bien con el libro. 🌱</p>
+      <button class="btn btn-yes" id="celebrate">BOMBOCLA 💥</button>
+      <!-- Audio oculto -->
+     <audio id="bomboclaSound" src="bombocla.mp3"></audio>
+      <div id="slideshow" style="margin-top:20px; display:none;">
+        <img id="slideshow-img" src="" alt="Recuerdos" style="max-width:100%; border-radius:20px;"/>
+        <p id="slideshow-text"></p>
+        <div class="foot">(Dicen que la flor del infierno separa destinos.
+Yo quiero que nos una.Te amo mi princesa❤️.)</div>
+      </div>
+    </div>
+    <div class="signature">Hecho con ♥ por tu  hermoso novio</div>
+  </div>
+<script>
+  const yesBtn = document.getElementById("yes");
+  const noBtn = document.getElementById("no");
+  const celebrateBtn = document.getElementById("celebrate");
+   const bomboclaSound = document.getElementById("bomboclaSound");
+  const overlay = document.getElementById("overlay");
+  // contador de movimientos del NO
+  let noMoves = 0;
+
+  // botón NO se escapa
+  function moveNo(){
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+    noBtn.style.position = "fixed";
+    noBtn.style.left = Math.random()*maxX + "px";
+    noBtn.style.top  = Math.random()*maxY + "px";
+  }
+  noBtn.addEventListener("mouseenter", () => {
+    moveNo();
+    noMoves++;
+  });
+
+  // botón SÍ
+  yesBtn.addEventListener("click", () => {
+    overlay.classList.add("show");
+    noBtn.style.visibility="hidden";
+    launchConfetti();
+    
+  });
+
+
+  // Slideshow
+  const fotos = ["foto1.png","foto2.png","foto3.png","foto4.png"];
+  const slideshow = document.getElementById("slideshow");
+  const slideshowImg = document.getElementById("slideshow-img");
+  const slideshowText = document.getElementById("slideshow-text");
+  celebrateBtn.addEventListener("click", () => {
+  bomboclaSound.currentTime = 0; // reinicia desde el inicio
+  bomboclaSound.play();          // 🔊 reproduce el sonido  
+  let index = 0;
+  slideshow.style.display = "block";
+  slideshowImg.src = fotos[index];
+  // desaparecer botón suavemente
+  celebrateBtn.style.opacity = "0";
+  setTimeout(() => celebrateBtn.style.display = "none", 500);
+  // Mostrar corazón animado
+const heartContainer = document.getElementById("heart-container");
+heartContainer.style.display = "block";
+
+// Después de un rato, ocultarlo
+setTimeout(() => {
+  heartContainer.style.display = "none";
+}, 6000);
+
+  
+  
+  const interval = setInterval(() => {
+    index++;
+    if (index < fotos.length) {
+      slideshowImg.src = fotos[index];
+    } else {
+      clearInterval(interval);
+      slideshowImg.style.display = "none";
+      slideshowText.textContent = "espero hacer muchas sorpresas bonitas y momentos lindo contigo 💖";
+
+    }
+  }, 3000);
+});
+
+// Confeti
+function launchConfetti(){
+  const colors = ['#34d399','#f472b6','#60a5fa','#fbbf24','#f87171','#a78bfa'];
+  const amount = 80;
+  for(let i=0;i<amount;i++){
+    const c = document.createElement('div');
+    c.className='confetti';
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = colors[(Math.random()*colors.length)|0];
+    c.style.animation = `fall ${4 + Math.random()*3}s linear`;
+    c.style.transform = `rotate(${Math.random()*360}deg)`;
+    c.style.width = (6 + Math.random()*6)+'px';
+    c.style.height= (10+ Math.random()*8)+'px';
+    document.body.appendChild(c);
+    setTimeout(()=> c.remove(), 8000);
+  }
+}
+// Frases del botón NO
+const frasesNo = ["No😜","se te deslizo el mouse...espero...😅","okey","ok","oc","👍","Segura😠?","super segura😡?","ultra segura🤬?","hiper mega segura?","Piénsalo bien 🤔","piensalo mejor😖", "No me esquives 🙃","es que no me amas?💔🥺", "Última oportudinad🙄","otras 3 oportunidades pq se q no lo pensaste bien🥴"];
+let indexNo = 0;
+
+noBtn.addEventListener("mouseover", () => {
+  // Cambiar texto
+  indexNo = (indexNo + 1) % frasesNo.length;
+  noBtn.innerText = frasesNo[indexNo];
+
+  // Mover el botón
+  const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+  const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+  noBtn.style.position = "absolute";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+});
+
+</script>
+
+</body>
+
+</html>
